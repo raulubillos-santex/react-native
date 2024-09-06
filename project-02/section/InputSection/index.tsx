@@ -1,4 +1,4 @@
-import { Alert, NativeSyntheticEvent, StyleSheet, Text, TextInput, TextInputChangeEventData, View } from 'react-native'
+import { Alert, NativeSyntheticEvent, StyleSheet, Text, TextInput, TextInputChangeEventData, useWindowDimensions, View } from 'react-native'
 import React, { useState } from 'react'
 import { Button } from '../../components/Button'
 import GameView from '../../components/GameView';
@@ -30,13 +30,20 @@ export default function InputSection({submitFunction}:Props) {
     }
   }
 
+
+  const dimension = useWindowDimensions();
+
+  const isLandscape = dimension.height<dimension.width
+
+  const styles = isLandscape? stylesLandscape:stylesPortrait;
+
   return (
-    <GameView>
+    <GameView style={isLandscape&&stylesLandscape.gameView}>
         <View style={styles.inputSection}>
             <Text style={styles.subtitle}>Enter Number</Text>
             <TextInput inputMode='numeric' keyboardType='number-pad' value={number?.toString()} onChangeText={onChangeNumber} style={styles.input}/>
         </View>
-        <ButtonView>
+        <ButtonView style={styles.buttonSection}>
           <Button>
               <Text style={styles.buttonTitle} onPress={reset}>Reset</Text>
           </Button>
@@ -71,10 +78,11 @@ function emitInsultingButJustMessage(reset: () => void) {
   ]);
 }
 
-const styles = StyleSheet.create({
+const stylesLandscape = StyleSheet.create({
+    gameView:{
+      paddingHorizontal:0,
+    },
     subtitle: {
-      borderWidth:3,
-      borderColor:"#ffff",
       margin:10,
       textAlign:"center",
       textAlignVertical:"center",
@@ -89,12 +97,12 @@ const styles = StyleSheet.create({
       color: "#ffffff"
     },
     buttonStyle: {
-      padding:10
+      padding:10,
+      flex:1
     },
     buttonSection:{
       flexDirection:"row",
-      alignContent:"space-between",
-      justifyContent:"space-around"
+      justifyContent:"space-around" 
     },
     inputSection: {
       flexDirection:"column",
@@ -114,5 +122,50 @@ const styles = StyleSheet.create({
       color:"#ffd903",
       fontWeight:"600"
     }
+})
+
+const stylesPortrait = StyleSheet.create({
+  subtitle: {
+    borderWidth:3,
+    borderColor:"#ffff",
+    margin:10,
+    textAlign:"center",
+    textAlignVertical:"center",
+    padding:10,
+    fontSize:15,
+    fontWeight:"600",
+    color: "#ffff",
+  },
+  buttonTitle: {
+    fontSize:20,
+    fontWeight:"light",
+    color: "#ffffff"
+  },
+  buttonStyle: {
+    padding:10
+  },
+  buttonSection:{
+    flexDirection:"row",
+    alignContent:"space-between",
+    justifyContent:"space-around"
+  },
+  inputSection: {
+    flexDirection:"column",
+    justifyContent:"center",
+    alignItems:"center",
+    paddingHorizontal:40
+  },
+  input:{
+    borderBottomColor:"#ffd903",
+    borderBottomWidth:1,
+    borderRadius:10,
+    padding:10,
+    marginBottom:20,
+    width:90,
+    textAlign:"center",
+    fontSize:30,
+    color:"#ffd903",
+    fontWeight:"600"
+  }
 })
 

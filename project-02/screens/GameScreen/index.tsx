@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { FlatList, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeView } from '../../components/SafeView'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -18,6 +18,12 @@ export default function FinishScreen({route,navigation}:Props) {
   const [results,setResults] = useState<number[]>([]);
 
   const numberToGuess = route.params.number;
+
+  const dimension = useWindowDimensions();
+
+  const isLandscape = dimension.height<dimension.width
+
+  const styles = isLandscape ? stylesLandscape : stylesPortrait;
 
   useEffect(() => {
     setRandomNumber(generateRandomBetween(min,max,numberToGuess));
@@ -52,12 +58,12 @@ export default function FinishScreen({route,navigation}:Props) {
       </View>
       <GameView style={styles.gamePadding}>
         <Text style={styles.subtitle}>Higher or lower?</Text>
-        <ButtonView>
+        <ButtonView style={styles.buttonView}>
           <Button styleButton={styles.buttonStyle} onPress={()=>setNumber("Lower")}>
             <Ionicons style={styles.buttonTitle} name='remove'></Ionicons>
           </Button>
           <Button styleButton={styles.buttonStyle} onPress={()=>setNumber("Higher")}>
-          <Ionicons style={styles.buttonTitle} name='add'></Ionicons>
+            <Ionicons style={styles.buttonTitle} name='add'></Ionicons>
           </Button>
         </ButtonView>
       </GameView>
@@ -73,11 +79,66 @@ export default function FinishScreen({route,navigation}:Props) {
   )
 }
 
-const styles = StyleSheet.create({  
+const stylesLandscape = StyleSheet.create({  
   titleView: {
     alignItems:"center",
     justifyContent:"center",
     flex:5,
+  },
+  buttonView:{
+    flex:1
+  },
+  title: {
+    marginTop:10,
+    marginBottom:10,
+    fontSize:30,
+    fontWeight:"bold",
+    color: "#ffd903",
+  },
+  subtitle: {
+    marginBottom:20,
+    fontSize:20,
+    fontWeight:"bold",
+    color: "#d0b000",
+    textAlign:"center",
+    flex:1
+  },
+  buttonTitle: {
+    fontSize:20,
+    fontWeight:"light",
+    color: "#ffffff",
+  },
+  buttonStyle: {
+    paddingHorizontal:30,
+    flex:1
+  },
+  gamePadding: {
+    marginHorizontal:20,
+    flex:7,
+  },
+  resultsView:{
+    flex:9
+  },
+  resultsText:{
+    backgroundColor: "#ffd903",
+    borderRadius:20,
+    borderWidth:1,
+    padding:10,
+    borderColor:"black",
+    marginVertical:10,
+    marginHorizontal:4
+  }
+})
+
+const stylesPortrait = StyleSheet.create({  
+  titleView: {
+    alignItems:"center",
+    justifyContent:"center",
+    flex:5,
+  },
+
+  buttonView:{
+    flex:1
   },
   title: {
     borderWidth:5,

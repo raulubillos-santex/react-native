@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, View } from 'react-native'
+import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, useWindowDimensions, View } from 'react-native'
 import React from 'react'
 import { SafeView } from '../../components/SafeView'
 import { Button } from '../../components/Button'
@@ -13,19 +13,50 @@ export default function EnterNumberScreen({navigation}:Props) {
     navigation.navigate("Game", {number});
   }
 
+
+  const dimension = useWindowDimensions();
+
+  const isLandscape = dimension.height<dimension.width
+
+  const styles = isLandscape? stylesLandscape:stylesPortrait;
+
   return (
-    <SafeView>
-      <View style={styles.titleView}>
-        <Text style={styles.title}>Guess my number</Text>
-      </View>
-      <View style={styles.gameView}>
-        <InputSection submitFunction={submitFunction}></InputSection>
-      </View>
-    </SafeView>
+
+        <SafeView>
+            <ScrollView>
+              <KeyboardAvoidingView style={{flex:1}} behavior='position'>
+                  <View style={styles.titleView}>
+                    <Text style={styles.title}>Guess my number</Text>
+                  </View>
+                  <View style={styles.gameView}>
+                    <InputSection submitFunction={submitFunction}></InputSection>
+                  </View>
+              </KeyboardAvoidingView>
+            </ScrollView>
+        </SafeView>
   )
 }
 
-const styles = StyleSheet.create({
+const stylesLandscape = StyleSheet.create({
+  titleView: {
+    alignItems:"center",
+    justifyContent:"center",
+    flex:1,
+  },
+  title: {
+    marginTop:10,
+    fontSize:30,
+    fontWeight:"bold",
+    color: "#ffff",
+  },
+  gameView:{
+    flex:3,
+    padding:50
+  },
+})
+
+
+const stylesPortrait = StyleSheet.create({
   titleView: {
     alignItems:"center",
     justifyContent:"center",

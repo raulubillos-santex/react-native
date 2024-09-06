@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, Dimensions, useWindowDimensions } from 'react-native'
 import React from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SafeView } from '../../components/SafeView';
@@ -15,17 +15,23 @@ export const StartGameScreen:React.FC<Props> = ({ navigation }:Props) => {
   const goSummary = () => {
     navigation.navigate("Summary");
   }
+
+  const dimension = useWindowDimensions();
+
+  const isLandscape = dimension.height<dimension.width
+
+
   return (
     <SafeView>
-      <View style={styles.titleView}>
-        <Text style={styles.title}>Guessing game</Text>
+      <View style={isLandscape?stylesLandscape.titleView:stylesPortrait.titleView}>
+        <Text style={isLandscape?stylesLandscape.title:stylesPortrait.title}>Guessing game</Text>
       </View>
-      <View style={styles.menuView}>
-        <Button styleButton={styles.buttonStyle} onPress={goStartGame}>
-          <Text style={styles.buttonTitle}>Start</Text>
+      <View style={isLandscape?stylesLandscape.menuView:stylesPortrait.menuView}>
+        <Button styleButton={isLandscape?stylesLandscape.buttonStyle:stylesPortrait.buttonStyle} onPress={goStartGame}>
+          <Text style={isLandscape?stylesLandscape.buttonTitle:stylesPortrait.buttonTitle}>Start</Text>
         </Button>
-        <Button styleButton={styles.buttonStyle} onPress={goSummary}>
-          <Text style={styles.buttonTitle}>Scoreboard</Text>
+        <Button styleButton={isLandscape?stylesLandscape.buttonStyle:stylesPortrait.buttonStyle} onPress={goSummary}>
+          <Text style={isLandscape?stylesLandscape.buttonTitle:stylesPortrait.buttonTitle}>Scoreboard</Text>
         </Button>
       </View>
     </SafeView>
@@ -34,7 +40,7 @@ export const StartGameScreen:React.FC<Props> = ({ navigation }:Props) => {
 
 const device = Dimensions.get("screen");
 
-const styles = StyleSheet.create({
+const stylesPortrait = StyleSheet.create({
   titleView: {
     alignItems:"center",
     justifyContent:"center",
@@ -63,5 +69,34 @@ const styles = StyleSheet.create({
   buttonStyle: {
     padding:10,
     margin:40
+  },
+})
+
+
+const stylesLandscape = StyleSheet.create({
+  titleView: {
+    alignItems:"center",
+    justifyContent:"center",
+    flex:1,
+  },
+  title: {
+    margin:device.height<380 ? 10:20,
+    fontSize:30,
+    fontWeight:"bold",
+    color: "#ffff",
+    maxWidth:"80%"
+  },
+  buttonTitle: {
+    fontSize:20,
+    fontWeight:"bold",
+    color: "#ffffff"
+  },
+  menuView: {
+    justifyContent:"center",
+    flex:3,
+  },
+  buttonStyle: {
+    padding:10,
+    margin:20
   },
 })
